@@ -1,0 +1,8 @@
+/.bundle/
+/vendor/bundle
+*.gem
+/.env
+/.ruby-version
+/coverage/
+/pkg/
+/tmp/
