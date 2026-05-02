@@ -1,0 +1,12 @@
+{
+  "type": "drakon",
+  "id": "long_chain",
+  "items": {
+    "1": { "type": "action", "content": "ctx.trace << 1", "one": "2" },
+    "2": { "type": "action", "content": "ctx.trace << 2", "one": "3" },
+    "3": { "type": "action", "content": "ctx.trace << 3", "one": "4" },
+    "4": { "type": "action", "content": "ctx.trace << 4", "one": "5" },
+    "5": { "type": "action", "content": "ctx.trace << 5", "one": "6" },
+    "6": { "type": "end" }
+  }
+}

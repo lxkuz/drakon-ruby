@@ -1,0 +1,16 @@
+{
+  "type": "drakon",
+  "id": "html_condition",
+  "items": {
+    "1": {
+      "type": "question",
+      "content": "<p>ctx.use_html</p>",
+      "one": "2",
+      "two": "3",
+      "flag1": 1
+    },
+    "2": { "type": "action", "content": "ctx.trace << :html_true", "one": "4" },
+    "3": { "type": "action", "content": "ctx.trace << :html_false", "one": "4" },
+    "4": { "type": "end" }
+  }
+}

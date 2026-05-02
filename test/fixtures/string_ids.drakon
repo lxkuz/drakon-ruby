@@ -1,0 +1,17 @@
+{
+  "type": "drakon",
+  "id": "string_ids",
+  "items": {
+    "a": { "type": "action", "content": "ctx.trace << :a", "one": "b" },
+    "b": {
+      "type": "question",
+      "content": "ctx.ok",
+      "one": "c",
+      "two": "d",
+      "flag1": 1
+    },
+    "c": { "type": "action", "content": "ctx.trace << :c", "one": "e" },
+    "d": { "type": "action", "content": "ctx.trace << :d", "one": "e" },
+    "e": { "type": "end" }
+  }
+}

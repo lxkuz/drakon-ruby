@@ -1,0 +1,10 @@
+{
+  "type": "drakon",
+  "id": "if_else",
+  "items": {
+    "1": { "type": "question", "content": "ctx.flag", "one": "2", "two": "3", "flag1": 1 },
+    "2": { "type": "action", "content": "ctx.trace << :yes", "one": "4" },
+    "3": { "type": "action", "content": "ctx.trace << :no", "one": "4" },
+    "4": { "type": "end" }
+  }
+}

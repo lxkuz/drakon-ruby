@@ -1,0 +1,9 @@
+{
+  "type": "drakon",
+  "id": "branch_entry",
+  "items": {
+    "1": { "type": "branch", "branchId": 0, "content": "", "one": "2" },
+    "2": { "type": "action", "content": "ctx.trace << :after_branch", "one": "3" },
+    "3": { "type": "end" }
+  }
+}
