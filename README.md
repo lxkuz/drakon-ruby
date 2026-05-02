@@ -14,7 +14,7 @@
 
 ### Силуэт (silhouette)
 
-Ветка — `type: "branch"`, переход к следующей части — `type: "address"` (поле `one`). Заголовок ветки задаёт **имя метода** Ruby (текст блока → безопасное имя; пустой заголовок → `segment_N`). Каждая «полоса» силуэта до следующего `address` генерируется как **отдельный метод**; точка входа вызывает метод первой ветки, в конце ветки вызывается метод следующей. Узлы `branch`/`address` сами по себе код не добавляют — только границы склейки. Признак силуэта см. `Document#silhouette?`.
+Ветка — `type: "branch"`, переход к следующей части — `type: "address"` (поле `one`). Заголовок ветки задаёт **имя метода** Ruby (текст блока → безопасное имя; пустой заголовок → `segment_N`). Каждая «полоса» силуэта до следующего `address` становится **отдельным приватным методом** класса-сервиса (`private`); снаружи доступны только **`self.call`** и публичный экземплярный **`call(ctx)`**, который вызывает метод первой ветки, а цепочка веток вызывает следующий приватный метод. Узлы `branch`/`address` сами по себе код не добавляют — только границы склейки. Признак силуэта см. `Document#silhouette?`.
 
 У **question** ветка «да» — `one`, «нет» — `two`; выражение для `if` берётся из непустого **`link`**, иначе из **`content`** (после снятия разметки при необходимости).
 
@@ -147,6 +147,86 @@ class MergePaths
   end
 end
 ```
+
+### Силуэт: полосы веток как приватные методы
+
+В JSON у корня задаётся `"silhouette": true`. Участки между `branch` и следующим `address` компилируются в **`private def имя_полосы(ctx)`**; пустой заголовок ветки даёт имя вида `segment_1`.
+
+Схема потока (две полосы, одна под другой):
+
+```
+  ┌─ branch «Первая ветка» ─────────────────┐
+  │  [ puts :branch_a ]                    │
+  └───────────────────┬────────────────────┘
+                      │
+        address «Вторая ветка»
+                      │
+  ┌─ branch (без текста → segment_…) ─────┐
+  │  [ puts :branch_b ]                    │
+  └───────────────────┬────────────────────┘
+                      ▼
+                    конец
+```
+
+Файл `test/fixtures/silhouette_two_branches.drakon`:
+
+```json
+{
+  "type": "drakon",
+  "id": "silhouette_two_branches",
+  "silhouette": true,
+  "items": {
+    "1": {
+      "type": "branch",
+      "branchId": 0,
+      "content": "<p>Первая ветка</p>",
+      "one": "2"
+    },
+    "2": { "type": "action", "content": "puts :branch_a", "one": "3" },
+    "3": {
+      "type": "address",
+      "content": "<p>Вторая ветка</p>",
+      "one": "4"
+    },
+    "4": { "type": "branch", "branchId": 1, "content": "", "one": "5" },
+    "5": { "type": "action", "content": "puts :branch_b", "one": "6" },
+    "6": { "type": "end" }
+  }
+}
+```
+
+Сгенерированный Ruby:
+
+```ruby
+# frozen_string_literal: true
+
+require "ostruct"
+
+class SilhouetteTwoBranches
+  def self.call(ctx = nil, **kwargs)
+    ctx ||= OpenStruct.new(**kwargs)
+    new.call(ctx)
+  end
+
+  def call(ctx)
+    первая_ветка(ctx)
+  end
+
+  private
+
+  def первая_ветка(ctx)
+    puts :branch_a
+    segment_1(ctx)
+  end
+
+  def segment_1(ctx)
+    puts :branch_b
+    return
+  end
+end
+```
+
+`SilhouetteTwoBranches.call` печатает `branch_a`, затем `branch_b` — как если бы полосы шли сверху вниз в силуэте.
 
 ### Цикл (машина состояний)
 
