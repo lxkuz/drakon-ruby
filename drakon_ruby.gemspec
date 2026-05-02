@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version = DrakonRuby::VERSION
   spec.summary = "Drakon flowchart to Ruby translator"
   spec.authors = ["drakon-ruby"]
-  spec.files = Dir["lib/**/*", "exe/*"]
+  spec.files = Dir["lib/**/*", "exe/*", "README.md"]
   spec.require_paths = ["lib"]
   spec.executables = ["drakon2rb"]
   spec.add_development_dependency "minitest", "~> 5.20"
