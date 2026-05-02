@@ -12,6 +12,17 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
     refute ctx.respond_to?(:skipped)
   end
 
+  def test_linear_service_call_style
+    klass = load_flow_class("linear")
+    ctx = OpenStruct.new(trace: [])
+    klass.call(ctx)
+    assert_equal %i[a b], ctx.trace
+
+    trace = []
+    klass.call(nil, trace: trace)
+    assert_equal %i[a b], trace
+  end
+
   def test_if_else_true
     ctx = OpenStruct.new(trace: [], flag: true)
     run_fixture("if_else", ctx)

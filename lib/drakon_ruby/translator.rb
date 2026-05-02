@@ -15,7 +15,7 @@ module DrakonRuby
     # @param class_name [String, nil] Ruby class name; inferred from document id if omitted
     # @param method_name [String] generated instance method (default + alias #run)
     # @param structured [true, false, :auto] — :auto uses structured codegen when the graph is acyclic
-    def to_ruby(class_name: nil, method_name: "start", structured: :auto)
+    def to_ruby(class_name: nil, method_name: "call", structured: :auto)
       doc = Document.parse(@source)
       cn = class_name || infer_class_name(doc)
       use_structured = case structured

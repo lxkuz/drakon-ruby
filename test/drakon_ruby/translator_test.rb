@@ -13,7 +13,8 @@ class DrakonRubyTranslatorTest < Minitest::Test
     }.to_json
     code = DrakonRuby::Translator.new(source).to_ruby(structured: false)
     assert_match(/class Smoke/, code)
-    assert_match(/def start\(ctx\)/, code)
+    assert_match(/def self\.call\(ctx = nil, \*\*kwargs\)/, code)
+    assert_match(/def call\(ctx\)/, code)
     assert_match(/when "1"/, code)
     assert_match(/state = "2"/, code)
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "content"
+require_relative "service_object"
 
 module DrakonRuby
   # Emits a Ruby class with a state-machine method so arbitrary branches and cycles work.
@@ -13,13 +14,14 @@ module DrakonRuby
       @start = document.start_id.to_s
     end
 
-    def ruby_source(class_name:, method_name: "start")
+    def ruby_source(class_name:, method_name: "call")
       cn = class_name.to_s
       mn = method_name.to_s
       raise Error, "invalid class name #{cn.inspect}" unless cn.match?(/\A[A-Z][a-zA-Z0-9_]*\z/)
 
-      lines = +"# frozen_string_literal: true\n\n"
+      lines = +ServiceObject::FILE_PREFIX
       lines << "class #{cn}\n"
+      lines << ServiceObject.class_call_method(mn, INDENT)
       lines << "#{INDENT}def #{mn}(ctx)\n"
       lines << "#{INDENT * 2}state = #{@start.inspect}\n"
       lines << "#{INDENT * 2}loop do\n"
@@ -33,6 +35,7 @@ module DrakonRuby
       lines << "#{INDENT * 2}end\n"
       lines << "#{INDENT}end\n"
       lines << "#{INDENT}alias_method :run, :#{mn}\n"
+      lines << "#{INDENT}alias_method :start, :#{mn}\n"
       lines << "end\n"
       lines
     end
