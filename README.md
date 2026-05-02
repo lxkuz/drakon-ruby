@@ -14,7 +14,7 @@
 
 ### Силуэт (silhouette)
 
-Ветка — `type: "branch"`, переход к следующей части — `type: "address"` (поле `one`). Эти узлы **не вставляют** свой текст в целевой код: только задают порядок склейки. Признак силуэта в JSON (`silhouette`, несколько `branch`, наличие `address`) см. `Document#silhouette?`.
+Ветка — `type: "branch"`, переход к следующей части — `type: "address"` (поле `one`). Заголовок ветки задаёт **имя метода** Ruby (текст блока → безопасное имя; пустой заголовок → `segment_N`). Каждая «полоса» силуэта до следующего `address` генерируется как **отдельный метод**; `start` вызывает метод первой ветки, в конце ветки вызывается метод следующей. Узлы `branch`/`address` сами по себе код не добавляют — только границы склейки. Признак силуэта см. `Document#silhouette?`.
 
 У **question** ветка «да» — `one`, «нет» — `two`; выражение для `if` берётся из непустого **`link`**, иначе из **`content`** (после снятия разметки при необходимости).
 
@@ -52,7 +52,7 @@ ruby -Ilib:test -e "Dir['test/**/*_test.rb'].each { require _1 }"
 - `lib/drakon_ruby/document.rb` — разбор JSON, старт, проверки, силуэт, нормализация типов
 - `lib/drakon_ruby/edges.rb` — все исходящие рёбра узла (`one`…`three`…, `cases`)
 - `lib/drakon_ruby/content.rb` — тело блока, условие вопроса, комментарии
-- `lib/drakon_ruby/structured_generator.rb` / `generator.rb` — склейка Ruby и режим с циклами
+- `lib/drakon_ruby/structured_generator.rb` / `silhouette_structured_generator.rb` / `generator.rb` — склейка Ruby, силуэт как методы веток, циклы
 - `lib/drakon_ruby/translator.rb` — `to_ruby`, имя класса по полю `id`
 - `exe/drakon2rb` — CLI
 

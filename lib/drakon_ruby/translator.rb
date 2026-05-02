@@ -3,6 +3,7 @@
 require_relative "document"
 require_relative "generator"
 require_relative "structured_generator"
+require_relative "silhouette_structured_generator"
 
 module DrakonRuby
   # Parses Drakon JSON; код узлов склеивается в Ruby (структурно для DAG, иначе машина состояний).
@@ -22,7 +23,9 @@ module DrakonRuby
                        when false then false
                        else StructuredGenerator.structured?(doc)
                        end
-      if use_structured
+      if use_structured && doc.silhouette?
+        SilhouetteStructuredGenerator.new(doc).ruby_source(class_name: cn, method_name: method_name)
+      elsif use_structured
         StructuredGenerator.new(doc).ruby_source(class_name: cn, method_name: method_name)
       else
         Generator.new(doc).ruby_source(class_name: cn, method_name: method_name)

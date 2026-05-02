@@ -151,5 +151,7 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
     code = DrakonRuby::Translator.new(source).to_ruby
     refute_match(/# Address:/, code)
     refute_match(/# Branch:/, code)
+    assert_operator code.scan(/^  def /).size, :>=, 3, "силуэт: start + отдельные методы веток"
+    assert_match(/segment_1\(ctx\)/, code)
   end
 end
