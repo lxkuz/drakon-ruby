@@ -10,12 +10,18 @@
             "content": ""
         },
         "10": {
+            "type": "insertion",
+            "content": "<p>linear</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
             "type": "action",
-            "content": "<p>puts :after_branch</p>",
+            "content": "<p>puts :after_insertion</p>",
             "one": "1",
             "two": ""
         }
     },
     "type": "drakon",
-    "id": "BranchEntry.drakon"
+    "id": "ParentWithInsertion.drakon"
 }

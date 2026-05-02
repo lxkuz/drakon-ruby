@@ -48,7 +48,6 @@ module DrakonRuby
       items.transform_values { |n| normalize_node(n) }
     end
 
-    ACTION_ALIASES = %w[insertion pause timer shelf process input output].freeze
     COMMENT_ALIASES = %w[comment commentin commentout].freeze
 
     def normalize_node(node)
@@ -56,14 +55,17 @@ module DrakonRuby
 
       t = node["type"].to_s
       t = "end" if t == "beginend"
-      t = "action" if ACTION_ALIASES.include?(t)
+      t = "simple_input" if t == "simpleinput"
+      t = "simple_output" if t == "simpleoutput"
+      t = "parallel" if t == "process"
       t = "comment" if COMMENT_ALIASES.include?(t)
       t = "branch" if t == "loopstart"
-      if t == "select" && node["one"] && node["two"]
-        t = "question"
-      elsif t == "case" && node["one"] && node["two"] && !node["three"]
-        t = "question"
-      end
+      # Обычные иконки без отдельной семантики — тело = Ruby.
+      t = "action" if %w[timer shelf input output].include?(t)
+
+      # select / case всегда остаются как есть (цепочка case → Ruby case/when).
+      # Бинарное ветвление — только узел question.
+
       node.merge("type" => t)
     end
 
@@ -74,9 +76,22 @@ module DrakonRuby
         Edges.outgoing_refs(n)
       end
       candidates = items.keys.map(&:to_s) - targets
-      raise Error, "cannot infer start: #{candidates.inspect}" unless candidates.size == 1
+      candidates.reject! { |id| (items[id]["type"]).to_s == "callout" }
+      return candidates.first if candidates.size == 1
 
-      candidates.first
+      raise Error, "cannot infer unique start: #{candidates.inspect}" if candidates.size > 1
+
+      # На больших схемах без входа остаются только callout — берём первую ветку силуэта (branch).
+      branches = items.keys.map(&:to_s).select { |id| items[id]["type"].to_s == "branch" }
+      unless branches.empty?
+        return branches.min_by { |id| sort_key_for_start(id) }
+      end
+
+      raise Error, "cannot infer start (no branch fallback)"
+    end
+
+    def sort_key_for_start(id)
+      id.match?(/^\d+$/) ? id.to_i : id.to_s
     end
 
     def validate!
@@ -89,14 +104,19 @@ module DrakonRuby
         raise Error, "node #{nid} missing type" if type.nil? || type.to_s.empty?
 
         case type.to_s
-        when "action", "branch", "address", "comment"
-          raise Error, "node #{nid} (#{type}) needs \"one\"" unless n.key?("one") && n["one"]
+        when "action", "branch", "address", "comment", "select", "simple_input", "simple_output",
+             "insertion", "pause", "parallel"
+          raise Error, "node #{nid} (#{type}) needs \"one\"" unless n.key?("one") && n["one"].to_s != ""
+        when "case"
+          raise Error, "node #{nid} (case) needs \"one\"" unless n["one"] && n["one"].to_s != ""
         when "question"
           raise Error, "node #{nid} (question) needs \"one\" and \"two\"" unless n["one"] && n["two"]
           cond = Content.question_condition(n)
           raise Error, "node #{nid} (question) needs non-empty condition (content or link)" if cond.empty?
         when "end"
           # ok
+        when "callout"
+          # аннотация на диаграмме, не участвует в обходе
         else
           raise Error, "unsupported node type #{type.inspect} at #{nid}"
         end

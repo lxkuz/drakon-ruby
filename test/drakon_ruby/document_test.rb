@@ -76,7 +76,7 @@ class DrakonRubyDocumentTest < Minitest::Test
       }
     }.to_json
     d = DrakonRuby::Document.parse(json)
-    assert_equal "action", d.node("1")["type"]
+    assert_equal "insertion", d.node("1")["type"]
     assert_equal "comment", d.node("2")["type"]
   end
 

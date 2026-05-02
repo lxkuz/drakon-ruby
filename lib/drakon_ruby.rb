@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "drakon_ruby/version"
+require_relative "drakon_ruby/diagram_inventory"
 require_relative "drakon_ruby/translator"
 
 module DrakonRuby

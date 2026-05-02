@@ -1,11 +1,40 @@
 {
-  "type": "drakon",
-  "id": "merge_paths",
-  "items": {
-    "1": { "type": "question", "content": "ctx.left", "one": "2", "two": "3", "flag1": 1 },
-    "2": { "type": "action", "content": "puts :from_left", "one": "4" },
-    "3": { "type": "action", "content": "puts :from_right", "one": "4" },
-    "4": { "type": "action", "content": "puts :merged", "one": "5" },
-    "5": { "type": "end" }
-  }
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "question",
+            "content": "<p>ctx.left</p>",
+            "one": "11",
+            "two": "12",
+            "flag1": 1
+        },
+        "11": {
+            "type": "action",
+            "content": "<p>puts :from_left</p>",
+            "one": "13",
+            "two": ""
+        },
+        "12": {
+            "type": "action",
+            "content": "<p>puts :from_right</p>",
+            "one": "13",
+            "two": ""
+        },
+        "13": {
+            "type": "action",
+            "content": "<p>puts :merged</p>",
+            "one": "1",
+            "two": ""
+        }
+    },
+    "type": "drakon",
+    "id": "MergePaths.drakon"
 }

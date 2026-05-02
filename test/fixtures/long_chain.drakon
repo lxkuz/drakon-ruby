@@ -1,12 +1,45 @@
 {
-  "type": "drakon",
-  "id": "long_chain",
-  "items": {
-    "1": { "type": "action", "content": "puts 1", "one": "2" },
-    "2": { "type": "action", "content": "puts 2", "one": "3" },
-    "3": { "type": "action", "content": "puts 3", "one": "4" },
-    "4": { "type": "action", "content": "puts 4", "one": "5" },
-    "5": { "type": "action", "content": "puts 5", "one": "6" },
-    "6": { "type": "end" }
-  }
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "action",
+            "content": "<p>puts 1</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
+            "type": "action",
+            "content": "<p>puts 2</p>",
+            "one": "12",
+            "two": ""
+        },
+        "12": {
+            "type": "action",
+            "content": "<p>puts 3</p>",
+            "one": "13",
+            "two": ""
+        },
+        "13": {
+            "type": "action",
+            "content": "<p>puts 4</p>",
+            "one": "14",
+            "two": ""
+        },
+        "14": {
+            "type": "action",
+            "content": "<p>puts 5</p>",
+            "one": "1",
+            "two": ""
+        }
+    },
+    "type": "drakon",
+    "id": "LongChain.drakon"
 }

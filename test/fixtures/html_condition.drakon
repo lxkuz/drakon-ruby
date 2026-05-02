@@ -1,16 +1,34 @@
 {
-  "type": "drakon",
-  "id": "html_condition",
-  "items": {
-    "1": {
-      "type": "question",
-      "content": "<p>ctx.use_html</p>",
-      "one": "2",
-      "two": "3",
-      "flag1": 1
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "question",
+            "content": "<p>ctx.use_html</p>",
+            "one": "11",
+            "two": "12",
+            "flag1": 1
+        },
+        "11": {
+            "type": "action",
+            "content": "<p>puts :html_true</p>",
+            "one": "1",
+            "two": ""
+        },
+        "12": {
+            "type": "action",
+            "content": "<p>puts :html_false</p>",
+            "one": "1",
+            "two": ""
+        }
     },
-    "2": { "type": "action", "content": "puts :html_true", "one": "4" },
-    "3": { "type": "action", "content": "puts :html_false", "one": "4" },
-    "4": { "type": "end" }
-  }
+    "type": "drakon",
+    "id": "HtmlCondition.drakon"
 }

@@ -2,10 +2,51 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __dir__)) unless $LOAD_PATH.include?(File.expand_path("../lib", __dir__))
+require "optparse"
 require "drakon_ruby"
 
+options = { insertion_paths: [] }
+
+parser = OptionParser.new do |opts|
+  opts.banner = <<~BANNER
+    usage: drakon2rb [options] <один-файл.drakon>
+
+    Первый аргумент — всегда путь к одному JSON-файлу схемы (не к каталогу).
+    Каталог этого файла автоматически добавляется к путям поиска вставок (insertion).
+    Опция -I добавляет ещё каталоги (например общую библиотеку схем).
+  BANNER
+  opts.on("-o", "--output PATH", "Записать Ruby в файл вместо stdout") do |v|
+    options[:output] = v
+  end
+  opts.on("-I", "--insertion-path DIR", "Доп. каталог для insertion (повторяемо). Без -I вставки ищутся рядом с входным файлом") do |v|
+    options[:insertion_paths] << v
+  end
+end
+
+parser.parse!
+
 path = ARGV[0]
-abort "usage: drakon2rb <file.drakon>" unless path && File.file?(path)
+if path.nil?
+  warn parser.help
+  exit 1
+elsif File.directory?(path)
+  warn "drakon2rb: укажите путь к одному файлу .drakon, а не к каталогу: #{path}"
+  warn "       дополнительные каталоги для вставок — через -I; рядом с входным файлом ищется всегда."
+  exit 1
+elsif !File.file?(path)
+  warn "drakon2rb: файл не найден: #{path.inspect}"
+  exit 1
+end
 
 source = File.read(path, encoding: "UTF-8")
-puts DrakonRuby::Translator.new(source).to_ruby
+ruby = DrakonRuby::Translator.new(source).to_ruby(
+  insertion_paths: options[:insertion_paths],
+  main_source_path: path
+)
+
+out = options[:output]
+if out
+  File.write(out, ruby, encoding: "UTF-8")
+else
+  print ruby
+end

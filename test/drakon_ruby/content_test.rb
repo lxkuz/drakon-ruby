@@ -40,6 +40,10 @@ class DrakonRubyContentTest < Minitest::Test
     assert_equal "a = 1\nb = 2", DrakonRuby::Content.action_body(node)
   end
 
+  def test_block_code_keeps_comparison_operators_near_paragraph_close
+    assert_equal "ctx.i < 3", DrakonRuby::Content.block_code("<p>ctx.i &lt; 3</p>")
+  end
+
   def test_comment_block
     node = { "content" => "note\nsecond line" }
     assert_equal "# note\n# second line", DrakonRuby::Content.comment_block(node)

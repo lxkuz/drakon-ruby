@@ -6,16 +6,22 @@
         "2": {
             "type": "branch",
             "branchId": 0,
-            "one": "10",
+            "one": "20",
             "content": ""
         },
-        "10": {
+        "20": {
             "type": "action",
-            "content": "<p>puts :after_branch</p>",
+            "content": "<p>puts :x</p>",
             "one": "1",
             "two": ""
+        },
+        "99": {
+            "type": "callout",
+            "content": "<p>Note A</p>",
+            "left": 0,
+            "top": 0
         }
     },
     "type": "drakon",
-    "id": "BranchEntry.drakon"
+    "id": "WithCallouts.drakon"
 }

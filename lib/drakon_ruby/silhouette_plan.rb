@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "choice"
+
 module DrakonRuby
   # Разбиение графа на «ветки силуэта»: счётчик сегмента увеличивается при переходе через узел type address.
   class SilhouettePlan
@@ -39,12 +41,24 @@ module DrakonRuby
 
       case n["type"].to_s
       when "address"
-        visit(n["one"].to_s, seg + 1)
+        tid = n["one"].to_s
+        # Вперёд по силуэту — новый сегмент; возврат на уже известный узел (цикл) — тот же сегмент, что у цели.
+        next_seg = @segment_of[tid] ? @segment_of[tid] : seg + 1
+        visit(tid, next_seg)
       when "question"
         visit(n["one"].to_s, seg)
         visit(n["two"].to_s, seg)
-      when "action", "branch", "comment"
+      when "select"
+        chain = Choice.case_chain(@items, id)
+        chain.each do |cid|
+          visit(@items[cid]["one"].to_s, seg)
+        end
+      when "case"
         visit(n["one"].to_s, seg)
+      when "action", "branch", "comment", "simple_input", "simple_output", "insertion", "pause", "parallel"
+        visit(n["one"].to_s, seg)
+      when "callout"
+        # только подпись на полотне
       when "end"
         # конец ветки
       else

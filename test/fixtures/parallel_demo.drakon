@@ -10,12 +10,12 @@
             "content": ""
         },
         "10": {
-            "type": "action",
-            "content": "<p>puts :after_branch</p>",
-            "one": "1",
-            "two": ""
+            "type": "process",
+            "content": "<p>ctx.a = 1</p>",
+            "secondary": "<p>ctx.b = 2</p>",
+            "one": "1"
         }
     },
     "type": "drakon",
-    "id": "BranchEntry.drakon"
+    "id": "ParallelDemo.drakon"
 }

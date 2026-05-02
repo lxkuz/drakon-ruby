@@ -1,10 +1,34 @@
 {
-  "type": "drakon",
-  "id": "loop_counter",
-  "items": {
-    "1": { "type": "action", "content": "ctx.i = 0\nputs :start", "one": "2" },
-    "2": { "type": "question", "content": "ctx.i < 3", "one": "3", "two": "4", "flag1": 1 },
-    "3": { "type": "action", "content": "ctx.i += 1\nputs ctx.i", "one": "2" },
-    "4": { "type": "end" }
-  }
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "action",
+            "content": "<p>ctx.i = 0</p><p>puts :start</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
+            "type": "question",
+            "content": "<p>ctx.i &lt; 3</p>",
+            "one": "12",
+            "two": "1",
+            "flag1": 1
+        },
+        "12": {
+            "type": "action",
+            "content": "<p>ctx.i += 1</p><p>puts ctx.i</p>",
+            "one": "11",
+            "two": ""
+        }
+    },
+    "type": "drakon",
+    "id": "LoopCounter.drakon"
 }

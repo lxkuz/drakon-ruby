@@ -1,19 +1,27 @@
 {
-  "type": "drakon",
-  "id": "with_comment",
-  "items": {
-    "1": {
-      "type": "commentout",
-      "content": "шаг подготовки",
-      "one": "2"
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "comment",
+            "content": "<p>шаг подготовки</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
+            "type": "action",
+            "content": "<p>puts :done</p>",
+            "one": "1",
+            "two": ""
+        }
     },
-    "2": {
-      "type": "action",
-      "content": "puts :done",
-      "one": "3"
-    },
-    "3": {
-      "type": "end"
-    }
-  }
+    "type": "drakon",
+    "id": "WithComment.drakon"
 }

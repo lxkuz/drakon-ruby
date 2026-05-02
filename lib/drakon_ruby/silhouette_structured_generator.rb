@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require_relative "callout_comments"
+require_relative "choice"
 require_relative "content"
+require_relative "insertion"
 require_relative "silhouette_plan"
 require_relative "service_object"
 
@@ -26,6 +29,7 @@ module DrakonRuby
       lines << ServiceObject.class_call_method(mn, INDENT)
 
       lines << "#{INDENT}def #{mn}(ctx)\n"
+      lines << CalloutComments.indented_prefix(@items, INDENT * 2)
       lines << "#{INDENT * 2}#{@method_names[0]}(ctx)\n"
       lines << "#{INDENT}end\n"
 
@@ -38,6 +42,14 @@ module DrakonRuby
         body = emit_segment(@plan.entries[s], s, nil)
         lines << body
         lines << "#{INDENT}end\n"
+      end
+
+      unless @helper_defs.empty?
+        lines << "\n"
+        @helper_defs.each do |chunk|
+          lines << chunk
+          lines << "\n" unless chunk.end_with?("\n")
+        end
       end
 
       lines << "end\n"
@@ -70,7 +82,12 @@ module DrakonRuby
         end
       end
 
-      br = ids.find { |id| @items[id]["type"].to_s == "branch" }
+      branches = ids.select { |id| @items[id]["type"].to_s == "branch" }
+      br = branches.find do |id|
+        Content.strip_html(@items[id]["content"].to_s).match?(/\S/)
+      end
+      br ||= branches.first
+
       if br
         lab = Content.strip_html(@items[br]["content"].to_s)
         return lab.match?(/\S/) ? lab : "segment_#{s}"
@@ -127,13 +144,16 @@ module DrakonRuby
         when "branch"
           cur = node["one"].to_s
         when "address"
-          nxt = seg + 1
-          callee = @method_names[nxt] || raise(Error, "silhouette: нет метода для сегмента #{nxt}")
+          tid = node["one"].to_s
+          target_seg = @plan.segment_of[tid] || raise(Error, "silhouette: address #{cur} → #{tid} без сегмента")
+          callee = @method_names[target_seg] || raise(Error, "silhouette: нет метода для сегмента #{target_seg}")
           out << indent("#{callee}(ctx)") << "\n"
           break
         when "question"
-          join = merge_for_question(cur)
-          verify_in_segment!(join, seg)
+          join = merge_after_question(cur, seg)
+          if join
+            verify_in_segment!(join, seg)
+          end
 
           cond = Content.question_condition(node)
           out << indent("if (#{cond})") << "\n"
@@ -146,6 +166,44 @@ module DrakonRuby
           @nest -= 1
           out << indent("end") << "\n"
           cur = join
+        when "select"
+          chain = Choice.case_chain(@items, cur)
+          join = Choice.merge_after_cases(@items, chain)
+          verify_in_segment!(join, seg)
+
+          expr = Choice.discriminator_expr(node)
+          out << indent("case #{expr}") << "\n"
+          chain.each do |cid|
+            cnode = @items[cid]
+            terms = Choice.when_clause_terms(cnode)
+            out << indent("when #{Choice.format_when_terms(terms)}") << "\n"
+            @nest += 1
+            out << emit_segment(cnode["one"].to_s, seg, join)
+            @nest -= 1
+          end
+          out << indent("else") << "\n"
+          @nest += 1
+          out << indent('raise ArgumentError, "no matching case branch"') << "\n"
+          @nest -= 1
+          out << indent("end") << "\n"
+          cur = join
+        when "case"
+          cur = node["one"].to_s
+        when "simple_input"
+          emit_simple_io(out, node, :input)
+          cur = node["one"].to_s
+        when "simple_output"
+          emit_simple_io(out, node, :output)
+          cur = node["one"].to_s
+        when "insertion"
+          out << indent(Insertion.call_expr_from_node(node)) << "\n"
+          cur = node["one"].to_s
+        when "pause"
+          out << indent("# pause") << "\n"
+          cur = node["one"].to_s
+        when "parallel"
+          emit_parallel(out, node)
+          cur = node["one"].to_s
         when "end"
           out << indent("return") << "\n"
           break
@@ -162,6 +220,29 @@ module DrakonRuby
       return if got == seg
 
       raise Error, "silhouette: узел #{id} ожидался в сегменте #{seg}, фактически #{got.inspect}"
+    end
+
+    # Точка слияния после question только внутри текущей полосы силуэта; рукава «да/нет» не считаем merge.
+    # Если рукава уходят по address в другие полосы — общего узла нет, join = nil.
+    def merge_after_question(qid, seg)
+      node = @items[qid]
+      y = node["one"].to_s
+      n = node["two"].to_s
+
+      dy = Choice.bfs_dist(y, @items)
+      dn = Choice.bfs_dist(n, @items)
+      common = dy.keys & dn.keys
+      candidates = common.select do |c|
+        cid = c.to_s
+        @plan.segment_of[cid] == seg && cid != y && cid != n
+      end
+      return nil if candidates.empty?
+
+      candidates.min_by do |c|
+        my = dy[c]
+        mn = dn[c]
+        [[my, mn].max, my + mn, c.to_s]
+      end
     end
   end
 end

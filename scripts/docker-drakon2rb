@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Запуск drakon2rb в Docker: вход читается с хоста, результат (-o) пишется на хост
+# (bind mount), а не «внутри» слоя контейнера.
+
+require "fileutils"
+require "optparse"
+require "pathname"
+
+repo_root = File.expand_path("..", __dir__)
+
+abort <<~USAGE if ARGV.empty?
+  usage: docker-drakon2rb <path/to/file.drakon> [-o OUT.rb] [-I DIR ...]
+
+  Путь к схеме — абсолютный или относительный текущего каталога в терминале.
+  Путь -o — любой каталог на вашей машине: файл появится там после работы контейнера.
+USAGE
+
+input_path = File.expand_path(ARGV.shift)
+abort "#{input_path}: нет такого файла" unless File.file?(input_path)
+
+input_dir = File.dirname(input_path)
+base = File.basename(input_path)
+
+output_raw = nil
+insert_dirs = []
+OptionParser.new do |o|
+  o.on("-o", "--output PATH") { |v| output_raw = v }
+  o.on("-I", "--insertion-path DIR") { |v| insert_dirs << v }
+end.parse!
+
+out_abs = output_raw ? File.expand_path(output_raw, Dir.pwd) : nil
+if out_abs
+  FileUtils.mkdir_p(File.dirname(out_abs))
+end
+
+compose_cmd = %w[docker compose run --rm]
+
+insert_dirs.each_with_index do |raw, i|
+  abs_ins = File.expand_path(raw, Dir.pwd)
+  unless File.directory?(abs_ins)
+    abort "docker-drakon2rb: -I #{raw.inspect}: нет такого каталога"
+  end
+  mount = "/drakon-insert-#{i}"
+  compose_cmd.push("-v", "#{abs_ins}:#{mount}:ro")
+end
+
+input_root = Pathname(input_dir).expand_path
+
+# Путь к файлу результата внутри контейнера (оба конца — bind mount на хост).
+out_in_container = nil
+if out_abs
+  out_path = Pathname(out_abs).expand_path
+  under_input = out_path.to_s == input_root.to_s ||
+                out_path.to_s.start_with?(input_root.to_s + File::SEPARATOR)
+
+  if under_input
+    rel = out_path.relative_path_from(input_root).to_s
+    out_in_container = File.join("/drakon-in", rel)
+  else
+    out_root = out_path.dirname.expand_path
+    FileUtils.mkdir_p(out_root.to_s)
+    rel = out_path.relative_path_from(out_root).to_s
+    compose_cmd.push("-v", "#{out_root}:/drakon-out")
+    out_in_container = File.join("/drakon-out", rel)
+  end
+end
+
+compose_cmd.push("-v", "#{input_dir}:/drakon-in", "-w", "/drakon-in", "drakon2rb", base)
+compose_cmd.push("-o", out_in_container) if out_in_container
+
+insert_dirs.each_index do |i|
+  compose_cmd.push("-I", "/drakon-insert-#{i}")
+end
+
+Dir.chdir(repo_root) { exec(*compose_cmd) }

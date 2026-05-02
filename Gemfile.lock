@@ -1,0 +1,27 @@
+PATH
+  remote: .
+  specs:
+    drakon_ruby (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.25.5)
+    rake (13.3.1)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  drakon_ruby!
+  minitest (~> 5.20)
+  rake (~> 13.0)
+
+CHECKSUMS
+  drakon_ruby (0.1.0)
+  minitest (5.25.5)
+  rake (13.3.1)
+
+BUNDLED WITH
+  4.0.9

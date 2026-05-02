@@ -1,0 +1,98 @@
+{
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "action",
+            "content": "<p>ctx.a ||= 1</p><p>ctx.b ||= -5</p><p>ctx.c ||= 6</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
+            "type": "question",
+            "content": "<p>ctx.a == 0</p>",
+            "one": "12",
+            "two": "30",
+            "flag1": 1
+        },
+        "12": {
+            "type": "question",
+            "content": "<p>ctx.b == 0</p>",
+            "one": "13",
+            "two": "20",
+            "flag1": 1
+        },
+        "13": {
+            "type": "question",
+            "content": "<p>ctx.c == 0</p>",
+            "one": "14",
+            "two": "15",
+            "flag1": 1
+        },
+        "14": {
+            "type": "action",
+            "content": "<p>puts \"любое действительное x (тождество 0 = 0)\"</p>",
+            "one": "1",
+            "two": ""
+        },
+        "15": {
+            "type": "action",
+            "content": "<p>puts \"нет решений (противоречие)\"</p>",
+            "one": "1",
+            "two": ""
+        },
+        "20": {
+            "type": "action",
+            "content": "<p>ctx.x = -ctx.c.to_f / ctx.b</p><p>puts \"линейное уравнение: x = #{ctx.x}\"</p>",
+            "one": "1",
+            "two": ""
+        },
+        "30": {
+            "type": "action",
+            "content": "<p>ctx.d = ctx.b * ctx.b - 4 * ctx.a * ctx.c</p>",
+            "one": "31",
+            "two": ""
+        },
+        "31": {
+            "type": "question",
+            "content": "<p>ctx.d &gt; 0</p>",
+            "one": "32",
+            "two": "33",
+            "flag1": 1
+        },
+        "32": {
+            "type": "action",
+            "content": "<p>sd = Math.sqrt(ctx.d)</p><p>ctx.x1 = (-ctx.b + sd) / (2.0 * ctx.a)</p><p>ctx.x2 = (-ctx.b - sd) / (2.0 * ctx.a)</p><p>puts \"D &gt; 0: два корня x1=#{ctx.x1}, x2=#{ctx.x2}\"</p>",
+            "one": "1",
+            "two": ""
+        },
+        "33": {
+            "type": "question",
+            "content": "<p>ctx.d == 0</p>",
+            "one": "34",
+            "two": "35",
+            "flag1": 1
+        },
+        "34": {
+            "type": "action",
+            "content": "<p>ctx.x = -ctx.b / (2.0 * ctx.a)</p><p>puts \"D = 0: один корень x=#{ctx.x}\"</p>",
+            "one": "1",
+            "two": ""
+        },
+        "35": {
+            "type": "action",
+            "content": "<p>puts \"нет действительных корней (D отрицательный)\"</p>",
+            "one": "1",
+            "two": ""
+        }
+    },
+    "type": "drakon",
+    "id": "Quadratic.drakon"
+}

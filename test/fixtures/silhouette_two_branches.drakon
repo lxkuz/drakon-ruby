@@ -1,37 +1,47 @@
 {
-  "type": "drakon",
-  "id": "silhouette_two_branches",
-  "silhouette": true,
-  "items": {
-    "1": {
-      "type": "branch",
-      "branchId": 0,
-      "content": "<p>Первая ветка</p>",
-      "one": "2"
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "branch",
+            "branchId": 1,
+            "content": "<p>Первая ветка</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
+            "type": "action",
+            "content": "<p>puts :branch_a</p>",
+            "one": "12",
+            "two": ""
+        },
+        "12": {
+            "type": "address",
+            "content": "<p>Вторая ветка</p>",
+            "one": "13"
+        },
+        "13": {
+            "type": "branch",
+            "branchId": 2,
+            "content": "",
+            "one": "14",
+            "two": ""
+        },
+        "14": {
+            "type": "action",
+            "content": "<p>puts :branch_b</p>",
+            "one": "1",
+            "two": ""
+        }
     },
-    "2": {
-      "type": "action",
-      "content": "puts :branch_a",
-      "one": "3"
-    },
-    "3": {
-      "type": "address",
-      "content": "<p>Вторая ветка</p>",
-      "one": "4"
-    },
-    "4": {
-      "type": "branch",
-      "branchId": 1,
-      "content": "",
-      "one": "5"
-    },
-    "5": {
-      "type": "action",
-      "content": "puts :branch_b",
-      "one": "6"
-    },
-    "6": {
-      "type": "end"
-    }
-  }
+    "silhouette": true,
+    "type": "drakon",
+    "id": "SilhouetteTwoBranches.drakon"
 }

@@ -1,0 +1,65 @@
+{
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "20": {
+            "type": "branch",
+            "branchId": 1,
+            "content": "<p>Init</p>",
+            "one": "5",
+            "two": ""
+        },
+        "5": {
+            "type": "action",
+            "content": "<p>validate_params</p>",
+            "one": "8",
+            "two": ""
+        },
+        "8": {
+            "type": "address",
+            "content": "<p>Process</p>",
+            "one": "4"
+        },
+        "4": {
+            "type": "branch",
+            "branchId": 2,
+            "content": "<p>Process</p>",
+            "one": "6",
+            "two": ""
+        },
+        "6": {
+            "type": "action",
+            "content": "<p>check_payment</p>",
+            "one": "7",
+            "two": ""
+        },
+        "7": {
+            "type": "question",
+            "content": "<p>ctx.status.to_s == 'paid'</p>",
+            "one": "9",
+            "two": "10",
+            "flag1": 1
+        },
+        "9": {
+            "type": "address",
+            "content": "<p>Done</p>",
+            "one": "3"
+        },
+        "10": {
+            "type": "address",
+            "content": "<p>Process</p>",
+            "one": "4"
+        },
+        "3": {
+            "type": "branch",
+            "branchId": 3,
+            "content": "<p>Done</p>",
+            "one": "1",
+            "two": ""
+        }
+    },
+    "silhouette": true,
+    "type": "drakon",
+    "id": "tes_s.drakon"
+}

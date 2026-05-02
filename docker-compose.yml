@@ -1,13 +1,16 @@
 services:
-  # Сборка и запуск транслятора: файлы с хоста монтируются в /work
+  # Сборка и запуск транслятора: каталог проекта в /work (rw — для -o внутри репо).
   #   docker compose run --rm drakon2rb test/fixtures/linear.drakon
+  #   docker compose run --rm drakon2rb test/fixtures/linear.drakon -o build/linear.rb
+  # Файл вне репозитория — скрипт scripts/docker-drakon2rb (монтирует каталог файла)
+  # или вручную: docker compose run --rm -v /host/dir:/in -w /in drakon2rb flow.drakon -o flow.rb
   drakon2rb:
     build:
       context: .
       target: runtime
     image: drakon-ruby:latest
     volumes:
-      - ./:/work:ro
+      - ./:/work
     working_dir: /work
 
   # Тесты: docker compose run --rm test

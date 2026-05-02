@@ -136,9 +136,15 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
   end
 
   def test_editor_aliases_insertion_pause
-    ctx = OpenStruct.new
-    out, _err = capture_io { run_fixture("aliases", ctx) }
-    assert_equal "from_insertion\n", out
+    paths = [File.expand_path("../fixtures", __dir__)]
+    path = File.expand_path("../fixtures/aliases.drakon", __dir__)
+    source = File.read(path, encoding: "UTF-8")
+    code = DrakonRuby::Translator.new(source).to_ruby(insertion_paths: paths)
+    mod = Module.new
+    mod.module_eval(code, path, 1)
+    klass = mod.const_get(:Aliases)
+    out, _err = capture_io { klass.call(OpenStruct.new) }
+    assert_equal "a\nb\n", out
   end
 
   def test_empty_action_passthrough

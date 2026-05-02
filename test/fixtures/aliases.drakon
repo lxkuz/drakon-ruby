@@ -1,19 +1,27 @@
 {
-  "type": "drakon",
-  "id": "aliases",
-  "items": {
-    "1": {
-      "type": "insertion",
-      "content": "puts :from_insertion",
-      "one": "2"
+    "items": {
+        "1": {
+            "type": "end"
+        },
+        "2": {
+            "type": "branch",
+            "branchId": 0,
+            "one": "10",
+            "content": ""
+        },
+        "10": {
+            "type": "insertion",
+            "content": "<p>linear</p>",
+            "one": "11",
+            "two": ""
+        },
+        "11": {
+            "type": "pause",
+            "content": "<p>пауза</p>",
+            "one": "1",
+            "two": ""
+        }
     },
-    "2": {
-      "type": "pause",
-      "content": "",
-      "one": "3"
-    },
-    "3": {
-      "type": "end"
-    }
-  }
+    "type": "drakon",
+    "id": "Aliases.drakon"
 }

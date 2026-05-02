@@ -46,7 +46,13 @@ module DrakonRuby
     def unwrap_editor_markup(s)
       t = CGI.unescapeHTML(s)
       t = t.gsub(%r{</p>\s*<p[^>]*>}i, "\n").gsub(%r{<br\s*/?>}i, "\n")
-      t = t.gsub(/<[^>]+>/m, "")
+      # Убираем только теги вида <name…> и </name>, чтобы не съедать сравнения «ctx.i < 3</p>» целиком.
+      100.times do
+        old = t.dup
+        t = t.gsub(%r{<[a-zA-Z][a-zA-Z0-9:-]*(?:\s[^>]*)?>}m, "")
+        t = t.gsub(%r{</[a-zA-Z][a-zA-Z0-9:-]*[^>]*>}i, "")
+        break if t == old
+      end
       t.lines.map(&:rstrip).join("\n").strip
     end
 

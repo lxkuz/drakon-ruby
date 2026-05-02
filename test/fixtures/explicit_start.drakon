@@ -1,10 +1,22 @@
 {
-  "type": "drakon",
-  "id": "explicit_start",
-  "start": "2",
-  "items": {
-    "1": { "type": "action", "content": "ctx.skipped = true", "one": "2" },
-    "2": { "type": "action", "content": "puts :from_2", "one": "3" },
-    "3": { "type": "end" }
-  }
+    "items": {
+        "1": {
+            "type": "action",
+            "content": "<p>ctx.skipped = true</p>",
+            "one": "2",
+            "two": ""
+        },
+        "2": {
+            "type": "action",
+            "content": "<p>puts :from_2</p>",
+            "one": "3",
+            "two": ""
+        },
+        "3": {
+            "type": "end"
+        }
+    },
+    "start": "2",
+    "type": "drakon",
+    "id": "ExplicitStart.drakon"
 }
