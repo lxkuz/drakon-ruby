@@ -2,19 +2,31 @@
 
 require_relative "document"
 require_relative "generator"
+require_relative "structured_generator"
 
 module DrakonRuby
-  # Parses Drakon JSON and emits executable Ruby (state machine).
+  # Parses Drakon JSON and emits executable Ruby (structured if/else when acyclic, else state machine).
   class Translator
     def initialize(source)
       @source = source
     end
 
     # @param class_name [String, nil] Ruby class name; inferred from document id if omitted
-    def to_ruby(class_name: nil)
+    # @param method_name [String] generated instance method (default + alias #run)
+    # @param structured [true, false, :auto] — :auto uses structured codegen when the graph is acyclic
+    def to_ruby(class_name: nil, method_name: "start", structured: :auto)
       doc = Document.parse(@source)
       cn = class_name || infer_class_name(doc)
-      Generator.new(doc).ruby_source(class_name: cn)
+      use_structured = case structured
+                       when true then true
+                       when false then false
+                       else StructuredGenerator.structured?(doc)
+                       end
+      if use_structured
+        StructuredGenerator.new(doc).ruby_source(class_name: cn, method_name: method_name)
+      else
+        Generator.new(doc).ruby_source(class_name: cn, method_name: method_name)
+      end
     end
 
     def ruby_class_name

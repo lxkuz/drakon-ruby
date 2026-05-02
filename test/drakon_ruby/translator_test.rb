@@ -11,9 +11,9 @@ class DrakonRubyTranslatorTest < Minitest::Test
         "2" => { "type" => "end" }
       }
     }.to_json
-    code = DrakonRuby::Translator.new(source).to_ruby
+    code = DrakonRuby::Translator.new(source).to_ruby(structured: false)
     assert_match(/class Smoke/, code)
-    assert_match(/def run\(ctx\)/, code)
+    assert_match(/def start\(ctx\)/, code)
     assert_match(/when "1"/, code)
     assert_match(/state = "2"/, code)
   end
