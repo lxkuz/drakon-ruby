@@ -11,12 +11,12 @@
     },
     "2": {
       "type": "action",
-      "content": "ctx.trace << :yes",
+      "content": "puts :yes",
       "one": "4"
     },
     "3": {
       "type": "action",
-      "content": "ctx.trace << :no",
+      "content": "puts :no",
       "one": "4"
     },
     "4": {
@@ -53,12 +53,12 @@
     },
     "10": {
       "type": "action",
-      "content": "ctx.trace << :picked_a",
+      "content": "puts :picked_a",
       "one": "5"
     },
     "11": {
       "type": "action",
-      "content": "ctx.trace << :picked_b",
+      "content": "puts :picked_b",
       "one": "5"
     }
   }

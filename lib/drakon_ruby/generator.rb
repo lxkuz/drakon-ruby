@@ -34,8 +34,6 @@ module DrakonRuby
       lines << "#{INDENT * 3}end\n"
       lines << "#{INDENT * 2}end\n"
       lines << "#{INDENT}end\n"
-      lines << "#{INDENT}alias_method :run, :#{mn}\n"
-      lines << "#{INDENT}alias_method :start, :#{mn}\n"
       lines << "end\n"
       lines
     end

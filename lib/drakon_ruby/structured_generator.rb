@@ -62,8 +62,6 @@ module DrakonRuby
       lines << "#{INDENT}def #{mn}(ctx)\n"
       lines << body
       lines << "#{INDENT}end\n"
-      lines << "#{INDENT}alias_method :run, :#{mn}\n"
-      lines << "#{INDENT}alias_method :start, :#{mn}\n"
       lines << "end\n"
       lines
     end

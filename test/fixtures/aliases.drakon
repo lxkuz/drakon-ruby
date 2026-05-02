@@ -4,7 +4,7 @@
   "items": {
     "1": {
       "type": "insertion",
-      "content": "ctx.trace << :from_insertion",
+      "content": "puts :from_insertion",
       "one": "2"
     },
     "2": {

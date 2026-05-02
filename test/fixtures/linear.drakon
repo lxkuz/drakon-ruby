@@ -2,8 +2,8 @@
   "type": "drakon",
   "id": "linear",
   "items": {
-    "1": { "type": "action", "content": "ctx.trace << :a", "one": "2" },
-    "2": { "type": "action", "content": "ctx.trace << :b", "one": "3" },
+    "1": { "type": "action", "content": "puts :a", "one": "2" },
+    "2": { "type": "action", "content": "puts :b", "one": "3" },
     "3": { "type": "end" }
   }
 }

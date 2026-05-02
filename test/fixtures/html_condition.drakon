@@ -9,8 +9,8 @@
       "two": "3",
       "flag1": 1
     },
-    "2": { "type": "action", "content": "ctx.trace << :html_true", "one": "4" },
-    "3": { "type": "action", "content": "ctx.trace << :html_false", "one": "4" },
+    "2": { "type": "action", "content": "puts :html_true", "one": "4" },
+    "3": { "type": "action", "content": "puts :html_false", "one": "4" },
     "4": { "type": "end" }
   }
 }

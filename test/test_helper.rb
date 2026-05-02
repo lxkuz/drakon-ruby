@@ -21,7 +21,7 @@ module DrakonRubyTest
 
     def run_fixture(fixture, ctx)
       klass = load_flow_class(fixture)
-      klass.new.run(ctx)
+      klass.call(ctx)
     end
   end
 end

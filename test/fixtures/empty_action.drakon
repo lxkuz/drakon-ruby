@@ -3,7 +3,7 @@
   "id": "empty_action",
   "items": {
     "1": { "type": "action", "content": "", "one": "2" },
-    "2": { "type": "action", "content": "ctx.trace << :after_empty", "one": "3" },
+    "2": { "type": "action", "content": "puts :after_empty", "one": "3" },
     "3": { "type": "end" }
   }
 }

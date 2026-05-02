@@ -9,7 +9,7 @@
     },
     "2": {
       "type": "action",
-      "content": "ctx.trace << :done",
+      "content": "puts :done",
       "one": "3"
     },
     "3": {

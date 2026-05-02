@@ -4,7 +4,7 @@
   "start": "2",
   "items": {
     "1": { "type": "action", "content": "ctx.skipped = true", "one": "2" },
-    "2": { "type": "action", "content": "ctx.trace << :from_2", "one": "3" },
+    "2": { "type": "action", "content": "puts :from_2", "one": "3" },
     "3": { "type": "end" }
   }
 }

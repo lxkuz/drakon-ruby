@@ -11,7 +11,7 @@
     },
     "2": {
       "type": "action",
-      "content": "ctx.trace << :branch_a",
+      "content": "puts :branch_a",
       "one": "3"
     },
     "3": {
@@ -27,7 +27,7 @@
     },
     "5": {
       "type": "action",
-      "content": "ctx.trace << :branch_b",
+      "content": "puts :branch_b",
       "one": "6"
     },
     "6": {

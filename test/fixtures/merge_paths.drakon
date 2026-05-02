@@ -3,9 +3,9 @@
   "id": "merge_paths",
   "items": {
     "1": { "type": "question", "content": "ctx.left", "one": "2", "two": "3", "flag1": 1 },
-    "2": { "type": "action", "content": "ctx.trace << :from_left", "one": "4" },
-    "3": { "type": "action", "content": "ctx.trace << :from_right", "one": "4" },
-    "4": { "type": "action", "content": "ctx.trace << :merged", "one": "5" },
+    "2": { "type": "action", "content": "puts :from_left", "one": "4" },
+    "3": { "type": "action", "content": "puts :from_right", "one": "4" },
+    "4": { "type": "action", "content": "puts :merged", "one": "5" },
     "5": { "type": "end" }
   }
 }

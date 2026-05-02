@@ -29,9 +29,6 @@ module DrakonRuby
       lines << "#{INDENT * 2}#{@method_names[0]}(ctx)\n"
       lines << "#{INDENT}end\n"
 
-      lines << "\n#{INDENT}alias_method :run, :#{mn}\n"
-      lines << "#{INDENT}alias_method :start, :#{mn}\n"
-
       lines << "\n#{INDENT}private\n"
 
       (0...@plan.segment_count).each do |s|

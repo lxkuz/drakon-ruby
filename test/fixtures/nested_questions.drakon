@@ -4,9 +4,9 @@
   "items": {
     "1": { "type": "question", "content": "ctx.outer", "one": "2", "two": "3", "flag1": 1 },
     "2": { "type": "question", "content": "ctx.inner", "one": "4", "two": "5", "flag1": 1 },
-    "3": { "type": "action", "content": "ctx.trace << :outer_no", "one": "6" },
-    "4": { "type": "action", "content": "ctx.trace << :both_yes", "one": "6" },
-    "5": { "type": "action", "content": "ctx.trace << :outer_yes_inner_no", "one": "6" },
+    "3": { "type": "action", "content": "puts :outer_no", "one": "6" },
+    "4": { "type": "action", "content": "puts :both_yes", "one": "6" },
+    "5": { "type": "action", "content": "puts :outer_yes_inner_no", "one": "6" },
     "6": { "type": "end" }
   }
 }
