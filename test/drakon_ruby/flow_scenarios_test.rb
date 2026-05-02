@@ -116,6 +116,22 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
     assert_equal %i[a d], ctx2.trace
   end
 
+  def test_comment_emits_ruby_comments
+    ctx = OpenStruct.new(trace: [])
+    run_fixture("with_comment", ctx)
+    assert_equal [:done], ctx.trace
+
+    path = File.expand_path("../fixtures/with_comment.drakon", __dir__)
+    code = DrakonRuby::Translator.new(File.read(path, encoding: "UTF-8")).to_ruby
+    assert_match(/# шаг подготовки/, code)
+  end
+
+  def test_editor_aliases_insertion_pause
+    ctx = OpenStruct.new(trace: [])
+    run_fixture("aliases", ctx)
+    assert_equal [:from_insertion], ctx.trace
+  end
+
   def test_empty_action_passthrough
     ctx = OpenStruct.new(trace: [])
     run_fixture("empty_action", ctx)

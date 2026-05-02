@@ -1,0 +1,19 @@
+{
+  "type": "drakon",
+  "id": "aliases",
+  "items": {
+    "1": {
+      "type": "insertion",
+      "content": "ctx.trace << :from_insertion",
+      "one": "2"
+    },
+    "2": {
+      "type": "pause",
+      "content": "",
+      "one": "3"
+    },
+    "3": {
+      "type": "end"
+    }
+  }
+}

@@ -49,5 +49,13 @@ module DrakonRuby
       t = t.gsub(/<[^>]+>/m, "")
       t.lines.map(&:rstrip).join("\n").strip
     end
+
+    # Комментарий ДРАКОН → строки Ruby-комментариев (без завершающего \n).
+    def comment_block(node)
+      c = block_code(node.is_a?(Hash) ? node["content"] : node.to_s)
+      return "" if c.strip.empty?
+
+      c.lines.map { |ln| "# #{ln.rstrip}".rstrip }.join("\n")
+    end
   end
 end

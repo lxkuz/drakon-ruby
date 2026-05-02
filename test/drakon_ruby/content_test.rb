@@ -39,4 +39,9 @@ class DrakonRubyContentTest < Minitest::Test
     node = { "content" => "<p>a = 1</p><p>b = 2</p>" }
     assert_equal "a = 1\nb = 2", DrakonRuby::Content.action_body(node)
   end
+
+  def test_comment_block
+    node = { "content" => "note\nsecond line" }
+    assert_equal "# note\n# second line", DrakonRuby::Content.comment_block(node)
+  end
 end

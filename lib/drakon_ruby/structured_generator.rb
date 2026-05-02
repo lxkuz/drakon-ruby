@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "content"
+require_relative "edges"
 
 module DrakonRuby
   # Ациклические схемы: код из полей узлов склеивается с if/else/end и порядком рёбер — без лишней семантики.
@@ -36,19 +37,7 @@ module DrakonRuby
       end
 
       def successors(id, items)
-        n = items[id.to_s] || items[id]
-        return [] unless n.is_a?(Hash)
-
-        case n["type"].to_s
-        when "action", "branch", "address"
-          [n["one"]].compact.map(&:to_s)
-        when "question"
-          [n["one"], n["two"]].compact.map(&:to_s)
-        when "end"
-          []
-        else
-          []
-        end
+        Edges.successors(id, items)
       end
     end
 
@@ -90,6 +79,11 @@ module DrakonRuby
         case type
         when "action"
           emit_action_lines(out, node)
+          cur = node["one"].to_s
+        when "comment"
+          txt = Content.comment_block(node)
+          txt.each_line { |ln| out << indent(ln.rstrip) << "\n" } unless txt.to_s.strip.empty?
+
           cur = node["one"].to_s
         when "branch", "address"
           cur = node["one"].to_s

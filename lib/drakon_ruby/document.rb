@@ -2,6 +2,7 @@
 
 require "json"
 require_relative "content"
+require_relative "edges"
 
 module DrakonRuby
   # Parsed Drakon JSON (e.g. from .drakon) with item graph and start node.
@@ -47,11 +48,22 @@ module DrakonRuby
       items.transform_values { |n| normalize_node(n) }
     end
 
+    ACTION_ALIASES = %w[insertion pause timer shelf process input output].freeze
+    COMMENT_ALIASES = %w[comment commentin commentout].freeze
+
     def normalize_node(node)
       return node unless node.is_a?(Hash)
 
       t = node["type"].to_s
       t = "end" if t == "beginend"
+      t = "action" if ACTION_ALIASES.include?(t)
+      t = "comment" if COMMENT_ALIASES.include?(t)
+      t = "branch" if t == "loopstart"
+      if t == "select" && node["one"] && node["two"]
+        t = "question"
+      elsif t == "case" && node["one"] && node["two"] && !node["three"]
+        t = "question"
+      end
       node.merge("type" => t)
     end
 
@@ -59,7 +71,7 @@ module DrakonRuby
       targets = items.flat_map do |_, n|
         next [] unless n.is_a?(Hash)
 
-        [n["one"], n["two"]].compact.map(&:to_s)
+        Edges.outgoing_refs(n)
       end
       candidates = items.keys.map(&:to_s) - targets
       raise Error, "cannot infer start: #{candidates.inspect}" unless candidates.size == 1
@@ -77,7 +89,7 @@ module DrakonRuby
         raise Error, "node #{nid} missing type" if type.nil? || type.to_s.empty?
 
         case type.to_s
-        when "action", "branch", "address"
+        when "action", "branch", "address", "comment"
           raise Error, "node #{nid} (#{type}) needs \"one\"" unless n.key?("one") && n["one"]
         when "question"
           raise Error, "node #{nid} (question) needs \"one\" and \"two\"" unless n["one"] && n["two"]

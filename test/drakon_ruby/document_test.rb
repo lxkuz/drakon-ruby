@@ -66,6 +66,20 @@ class DrakonRubyDocumentTest < Minitest::Test
     assert DrakonRuby::Document.parse(json).silhouette?
   end
 
+  def test_aliases_normalize_to_canonical_types
+    json = {
+      "id" => "t",
+      "items" => {
+        "1" => { "type" => "insertion", "content" => "x", "one" => "2" },
+        "2" => { "type" => "commentin", "content" => "c", "one" => "3" },
+        "3" => { "type" => "end" }
+      }
+    }.to_json
+    d = DrakonRuby::Document.parse(json)
+    assert_equal "action", d.node("1")["type"]
+    assert_equal "comment", d.node("2")["type"]
+  end
+
   def test_beginend_normalized_to_end
     json = {
       "id" => "t",

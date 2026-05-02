@@ -59,6 +59,7 @@ module DrakonRuby
       type = node["type"].to_s
       body = case type
              when "action" then emit_action(node)
+             when "comment" then emit_comment(node)
              when "branch", "address" then emit_silhouette_jump(node)
              when "question" then emit_question(node)
              when "end" then emit_end
@@ -76,6 +77,17 @@ module DrakonRuby
                 ""
               else
                 "#{indent_body(code, INDENT * 4)}\n"
+              end
+      "#{inner}#{INDENT * 4}state = #{dest.inspect}\n"
+    end
+
+    def emit_comment(node)
+      dest = node["one"].to_s
+      txt = Content.comment_block(node)
+      inner = if txt.strip.empty?
+                ""
+              else
+                "#{txt.lines.map { |ln| "#{INDENT * 4}#{ln.rstrip}" }.join("\n")}\n"
               end
       "#{inner}#{INDENT * 4}state = #{dest.inspect}\n"
     end

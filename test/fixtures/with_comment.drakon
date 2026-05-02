@@ -1,0 +1,19 @@
+{
+  "type": "drakon",
+  "id": "with_comment",
+  "items": {
+    "1": {
+      "type": "commentout",
+      "content": "шаг подготовки",
+      "one": "2"
+    },
+    "2": {
+      "type": "action",
+      "content": "ctx.trace << :done",
+      "one": "3"
+    },
+    "3": {
+      "type": "end"
+    }
+  }
+}
