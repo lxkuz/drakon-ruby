@@ -3,7 +3,7 @@
 require_relative "content"
 
 module DrakonRuby
-  # Для ациклических схем — обычный Ruby (if/else, последовательные действия), без case state.
+  # Ациклические схемы: код из полей узлов склеивается с if/else/end и порядком рёбер — без лишней семантики.
   class StructuredGenerator
     INDENT = "  "
 
@@ -91,13 +91,7 @@ module DrakonRuby
         when "action"
           emit_action_lines(out, node)
           cur = node["one"].to_s
-        when "branch"
-          label = Content.strip_html(node["content"].to_s)
-          out << indent("# Branch: #{label}") << "\n" if label.match?(/\S/)
-          cur = node["one"].to_s
-        when "address"
-          label = Content.strip_html(node["content"].to_s)
-          out << indent("# Address: #{label}") << "\n" if label.match?(/\S/)
+        when "branch", "address"
           cur = node["one"].to_s
         when "question"
           join = merge_for_question(cur)
@@ -123,7 +117,7 @@ module DrakonRuby
     end
 
     def emit_action_lines(out, node)
-      code = action_source(node)
+      code = Content.action_body(node)
       return if code.strip.empty?
 
       code.lines.each do |raw|
@@ -131,17 +125,6 @@ module DrakonRuby
         next if line.strip.empty?
 
         out << indent(line) << "\n"
-      end
-    end
-
-    def action_source(node)
-      s = node["content"].to_s
-      return "" if s.strip.empty?
-
-      if s.include?("<")
-        Content.strip_html(s)
-      else
-        s
       end
     end
 

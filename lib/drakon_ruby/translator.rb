@@ -5,7 +5,7 @@ require_relative "generator"
 require_relative "structured_generator"
 
 module DrakonRuby
-  # Parses Drakon JSON and emits executable Ruby (structured if/else when acyclic, else state machine).
+  # Parses Drakon JSON; код узлов склеивается в Ruby (структурно для DAG, иначе машина состояний).
   class Translator
     def initialize(source)
       @source = source

@@ -133,7 +133,7 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
     assert DrakonRuby::Document.parse(source).silhouette?
 
     code = DrakonRuby::Translator.new(source).to_ruby
-    assert_match(/# Address:/, code)
-    assert_match(/# Branch:/, code)
+    refute_match(/# Address:/, code)
+    refute_match(/# Branch:/, code)
   end
 end

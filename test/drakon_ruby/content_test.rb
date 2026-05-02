@@ -29,4 +29,14 @@ class DrakonRubyContentTest < Minitest::Test
     }
     assert_equal "ctx.ok", DrakonRuby::Content.question_condition(node)
   end
+
+  def test_action_body_plain_is_code
+    node = { "content" => "x = 1\ny = 2" }
+    assert_equal "x = 1\ny = 2", DrakonRuby::Content.action_body(node)
+  end
+
+  def test_action_body_unwraps_paragraphs
+    node = { "content" => "<p>a = 1</p><p>b = 2</p>" }
+    assert_equal "a = 1\nb = 2", DrakonRuby::Content.action_body(node)
+  end
 end

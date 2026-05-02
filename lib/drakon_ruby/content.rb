@@ -3,10 +3,11 @@
 require "cgi"
 
 module DrakonRuby
-  # Strips simple HTML from Drakon node text; conditions and code in tests use plain Ruby.
+  # Текст узлов ДРАКОН: по умолчанию это уже Ruby-код внутри блока; генератор только склеивает его с if/else и порядком.
   module Content
     module_function
 
+    # Устаревшее «сплющивание» для совместимости тестов; для нового кода см. block_code / action_body.
     def strip_html(str)
       return "" if str.nil? || str.to_s.empty?
 
@@ -14,16 +15,39 @@ module DrakonRuby
       CGI.unescapeHTML(plain)
     end
 
-    # У экспорта ДРАКОН условие часто дублируется: HTML в content, короткая формула в link.
+    # Поле content у action — исполняемый Ruby (возможна HTML-обёртка редактора).
+    def action_body(node)
+      block_code(node.is_a?(Hash) ? node["content"] : node)
+    end
+
+    # Строка блока как код: без разметки — как есть; с тегами — снимаем обёртку, сохраняя переводы строк.
+    def block_code(str)
+      s = str.to_s
+      return "" if s.strip.empty?
+
+      return s.strip unless s.include?("<")
+
+      unwrap_editor_markup(s)
+    end
+
+    # У вопроса: выражение для if — link при наличии, иначе content (оба как block_code).
     def question_condition(node)
       return "" unless node.is_a?(Hash)
 
       link = node["link"]
-      if link.is_a?(String) && !strip_html(link).empty?
-        strip_html(link)
-      else
-        strip_html(node["content"].to_s)
+      if link.is_a?(String)
+        c = block_code(link)
+        return c unless c.empty?
       end
+
+      block_code(node["content"].to_s)
+    end
+
+    def unwrap_editor_markup(s)
+      t = CGI.unescapeHTML(s)
+      t = t.gsub(%r{</p>\s*<p[^>]*>}i, "\n").gsub(%r{<br\s*/?>}i, "\n")
+      t = t.gsub(/<[^>]+>/m, "")
+      t.lines.map(&:rstrip).join("\n").strip
     end
   end
 end
