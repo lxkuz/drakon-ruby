@@ -39,4 +39,42 @@ class DrakonRubyDocumentTest < Minitest::Test
     err = assert_raises(DrakonRuby::Error) { DrakonRuby::Document.parse(json) }
     assert_match(/unsupported node type/i, err.message)
   end
+
+  def test_silhouette_flag_and_address
+    json = {
+      "id" => "s",
+      "silhouette" => true,
+      "items" => {
+        "1" => { "type" => "address", "content" => "next", "one" => "2" },
+        "2" => { "type" => "end" }
+      }
+    }.to_json
+    d = DrakonRuby::Document.parse(json)
+    assert d.silhouette?
+  end
+
+  def test_silhouette_inferred_from_multiple_branches
+    json = {
+      "id" => "s",
+      "items" => {
+        "1" => { "type" => "branch", "branchId" => 0, "content" => "", "one" => "2" },
+        "2" => { "type" => "address", "content" => "", "one" => "3" },
+        "3" => { "type" => "branch", "branchId" => 1, "content" => "", "one" => "4" },
+        "4" => { "type" => "end" }
+      }
+    }.to_json
+    assert DrakonRuby::Document.parse(json).silhouette?
+  end
+
+  def test_beginend_normalized_to_end
+    json = {
+      "id" => "t",
+      "items" => {
+        "1" => { "type" => "action", "content" => "ctx.ok = true", "one" => "2" },
+        "2" => { "type" => "beginend" }
+      }
+    }.to_json
+    d = DrakonRuby::Document.parse(json)
+    assert_equal "end", d.node("2")["type"]
+  end
 end

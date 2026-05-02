@@ -21,6 +21,10 @@ module DrakonRuby
       infer_class_name(Document.parse(@source))
     end
 
+    def silhouette?
+      Document.parse(@source).silhouette?
+    end
+
     private
 
     def infer_class_name(doc)

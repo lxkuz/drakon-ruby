@@ -9,17 +9,32 @@ module DrakonRuby
     attr_reader :id, :items, :raw, :start_id
 
     def self.parse(string)
-      raw = JSON.parse(string)
+      str = string.to_s
+      str = str.dup.force_encoding(Encoding::UTF_8) if str.encoding != Encoding::UTF_8
+      raw = JSON.parse(str)
       new(raw)
     end
 
     def initialize(raw)
       @raw = raw
       @id = raw["id"] || raw["name"] || "flow"
-      @items = (raw["items"] || {}).transform_keys(&:to_s)
+      @items = normalize_items((raw["items"] || {}).transform_keys(&:to_s))
       @start_id = (raw["start"] || raw["$start"])&.to_s
       @start_id ||= infer_start!
       validate!
+    end
+
+    # Silhouette (силуэт): несколько веток, переходы по иконке «адрес» между ветками; корень JSON или структура графа.
+    def silhouette?
+      return true if @raw["silhouette"] == true
+      return true if @raw["diagramKind"].to_s == "silhouette"
+      return true if @raw["style"].to_s == "silhouette"
+
+      types = @items.values.filter_map { |n| n["type"]&.to_s if n.is_a?(Hash) }
+      return true if types.count("branch") > 1
+      return true if types.include?("address")
+
+      false
     end
 
     def node(id)
@@ -27,6 +42,18 @@ module DrakonRuby
     end
 
     private
+
+    def normalize_items(items)
+      items.transform_values { |n| normalize_node(n) }
+    end
+
+    def normalize_node(node)
+      return node unless node.is_a?(Hash)
+
+      t = node["type"].to_s
+      t = "end" if t == "beginend"
+      node.merge("type" => t)
+    end
 
     def infer_start!
       targets = items.flat_map do |_, n|
@@ -50,7 +77,7 @@ module DrakonRuby
         raise Error, "node #{nid} missing type" if type.nil? || type.to_s.empty?
 
         case type.to_s
-        when "action", "branch"
+        when "action", "branch", "address"
           raise Error, "node #{nid} (#{type}) needs \"one\"" unless n.key?("one") && n["one"]
         when "question"
           raise Error, "node #{nid} (question) needs \"one\" and \"two\"" unless n["one"] && n["two"]

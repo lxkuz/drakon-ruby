@@ -57,7 +57,8 @@ module DrakonRuby
       type = node["type"].to_s
       body = case type
              when "action" then emit_action(node)
-             when "branch" then emit_branch(node)
+             when "branch" then emit_silhouette_jump(node, "Branch")
+             when "address" then emit_silhouette_jump(node, "Address")
              when "question" then emit_question(node)
              when "end" then emit_end
              else
@@ -78,9 +79,15 @@ module DrakonRuby
       "#{inner}#{INDENT * 4}state = #{dest.inspect}\n"
     end
 
-    def emit_branch(node)
+    def emit_silhouette_jump(node, kind)
       dest = node["one"].to_s
-      "#{INDENT * 4}state = #{dest.inspect}\n"
+      label = Content.strip_html(node["content"].to_s)
+      comment = if label.empty?
+                  ""
+                else
+                  "#{INDENT * 4}# #{kind}: #{label}\n"
+                end
+      "#{comment}#{INDENT * 4}state = #{dest.inspect}\n"
     end
 
     def emit_question(node)

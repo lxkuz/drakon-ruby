@@ -117,4 +117,19 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
     run_fixture("empty_action", ctx)
     assert_equal %i[after_empty], ctx.trace
   end
+
+  def test_silhouette_two_branches_via_address
+    ctx = OpenStruct.new(trace: [])
+    run_fixture("silhouette_two_branches", ctx)
+    assert_equal %i[branch_a branch_b], ctx.trace
+
+    path = File.expand_path("../fixtures/silhouette_two_branches.drakon", __dir__)
+    source = File.read(path, encoding: "UTF-8")
+    assert DrakonRuby::Translator.new(source).silhouette?
+    assert DrakonRuby::Document.parse(source).silhouette?
+
+    code = DrakonRuby::Translator.new(source).to_ruby
+    assert_match(/# Address:/, code)
+    assert_match(/# Branch:/, code)
+  end
 end
