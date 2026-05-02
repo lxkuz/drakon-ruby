@@ -1,0 +1,6 @@
+.git
+.ruby-lsp
+pkg
+coverage
+tmp
+*.gem

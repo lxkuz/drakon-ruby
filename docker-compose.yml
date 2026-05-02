@@ -1,0 +1,18 @@
+services:
+  # Сборка и запуск транслятора: файлы с хоста монтируются в /work
+  #   docker compose run --rm drakon2rb test/fixtures/linear.drakon
+  drakon2rb:
+    build:
+      context: .
+      target: runtime
+    image: drakon-ruby:latest
+    volumes:
+      - ./:/work:ro
+    working_dir: /work
+
+  # Тесты: docker compose run --rm test
+  test:
+    build:
+      context: .
+      target: test
+    image: drakon-ruby:test
