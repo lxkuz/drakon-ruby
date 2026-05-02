@@ -2,9 +2,64 @@
   "type": "drakon",
   "id": "if_else",
   "items": {
-    "1": { "type": "question", "content": "ctx.flag", "one": "2", "two": "3", "flag1": 1 },
-    "2": { "type": "action", "content": "ctx.trace << :yes", "one": "4" },
-    "3": { "type": "action", "content": "ctx.trace << :no", "one": "4" },
-    "4": { "type": "end" }
+    "1": {
+      "type": "question",
+      "content": "ctx.flag",
+      "one": "2",
+      "two": "3",
+      "flag1": 1
+    },
+    "2": {
+      "type": "action",
+      "content": "ctx.trace << :yes",
+      "one": "4"
+    },
+    "3": {
+      "type": "action",
+      "content": "ctx.trace << :no",
+      "one": "4"
+    },
+    "4": {
+      "type": "action",
+      "content": "",
+      "one": "6"
+    },
+    "5": {
+      "type": "end"
+    },
+    "6": {
+      "type": "branch",
+      "branchId": 0,
+      "content": "",
+      "one": "8"
+    },
+    "7": {
+      "type": "question",
+      "content": "<p>ctx.a &gt; ctx.b</p>",
+      "one": "10",
+      "two": "11",
+      "flag1": 1,
+      "link": "ctx.a > ctx.b"
+    },
+    "8": {
+      "type": "action",
+      "content": "ctx.a = 21",
+      "one": "9"
+    },
+    "9": {
+      "type": "action",
+      "content": "ctx.b = 20",
+      "one": "7"
+    },
+    "10": {
+      "type": "action",
+      "content": "ctx.trace << :picked_a",
+      "one": "5"
+    },
+    "11": {
+      "type": "action",
+      "content": "ctx.trace << :picked_b",
+      "one": "5"
+    }
   }
 }

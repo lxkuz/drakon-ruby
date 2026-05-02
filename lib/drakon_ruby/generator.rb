@@ -91,7 +91,7 @@ module DrakonRuby
     end
 
     def emit_question(node)
-      cond = Content.strip_html(node["content"])
+      cond = Content.question_condition(node)
       one = node["one"].to_s
       two = node["two"].to_s
       i4 = INDENT * 4

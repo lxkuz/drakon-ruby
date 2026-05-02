@@ -81,8 +81,8 @@ module DrakonRuby
           raise Error, "node #{nid} (#{type}) needs \"one\"" unless n.key?("one") && n["one"]
         when "question"
           raise Error, "node #{nid} (question) needs \"one\" and \"two\"" unless n["one"] && n["two"]
-          cond = Content.strip_html(n["content"])
-          raise Error, "node #{nid} (question) needs non-empty condition after strip" if cond.empty?
+          cond = Content.question_condition(n)
+          raise Error, "node #{nid} (question) needs non-empty condition (content or link)" if cond.empty?
         when "end"
           # ok
         else

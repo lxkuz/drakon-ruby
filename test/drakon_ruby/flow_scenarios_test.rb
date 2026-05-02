@@ -15,13 +15,17 @@ class DrakonRubyFlowScenariosTest < Minitest::Test
   def test_if_else_true
     ctx = OpenStruct.new(trace: [], flag: true)
     run_fixture("if_else", ctx)
-    assert_equal %i[yes], ctx.trace
+    assert_equal %i[yes picked_a], ctx.trace
+    assert_equal 21, ctx.a
+    assert_equal 20, ctx.b
   end
 
   def test_if_else_false
     ctx = OpenStruct.new(trace: [], flag: false)
     run_fixture("if_else", ctx)
-    assert_equal %i[no], ctx.trace
+    assert_equal %i[no picked_a], ctx.trace
+    assert_equal 21, ctx.a
+    assert_equal 20, ctx.b
   end
 
   def test_merge_paths_left
